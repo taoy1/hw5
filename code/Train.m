@@ -8,17 +8,21 @@ function [W, b] = Train(W, b, train_data, train_label, learning_rate)
 % This loop template simply prints the loop status in a non-verbose way.
 % Feel free to use it or discard it
 
+order = randperm(size(train_data,1));
 
 for i = 1:size(train_data,1)
-
-
-
-    if mod(i, 100) == 0
-        fprintf('\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b')
-        fprintf('Done %.2f %%', i/size(train_data,1)*100)
+    
+    index = order(i);
+    X = train_data(index,:)';
+    Y = train_label(index,:)';
+    [~, act_h, act_a] = Forward(W, b, X);
+    [grad_W, grad_b] = Backward(W, b, X, Y, act_h, act_a);
+	[W, b] = UpdateParameters(W, b, grad_W, grad_b, learning_rate);
+    
+    if mod(i, 700) == 0
+        fprintf('Done %.2f \n', i/size(train_data,1)*100)
     end
 end
-fprintf('\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b')
 
 
 end

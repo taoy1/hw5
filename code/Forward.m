@@ -14,15 +14,15 @@ for i = 1:length(W) % numLayers-1
     n = length(b{i});
     act_a{i} = zeros(n,1);
     
-    for j = 1:n % numNodes of output
-        % pre-activation
-        w = W{i}(:,j); % w at layer i -> i+1 and connecting to node j
-        if i==1
-            act_a{i}(j) = sum(w.*X) + b{i}(j);
-        else
-            act_a{i}(j) = sum(w.*act_h{i-1}) + b{i}(j);
-        end
+    if i == 1
+        last = X;
+    else
+        last = act_h{i-1};
     end
+    
+    % pre-activation
+    act_a{i} = sum(W{i} .* repmat(last, [1, size(W{i},2)]))' + b{i};
+    
     % post-activation
     if i ~= length(W)
         act_h{i} = ones(n,1)./(1+exp(-act_a{i}));
